@@ -2,7 +2,7 @@
 
 require_once "Database.php";
 
-class JobMapper extends DatabaseConfig{
+class JobMapper extends DatabaseConfig implements JobRepository {
     private $connection;
     private $query;
 
@@ -10,7 +10,7 @@ class JobMapper extends DatabaseConfig{
         $this->connection = $this->getConnection();
     }
 
-    public function insertJob($job){
+    public function insertJob(Job $job){
         $this->query = "insert into puna (emri, pershkrimi, foto)
         values (:emri, :pershkrimi, :foto)";
 
@@ -34,7 +34,8 @@ class JobMapper extends DatabaseConfig{
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
-    public function getJobbyId($job_id){
+
+    public function getJobById($job_id){
         $this->query = "select * from puna where puna_id=:puna_id";
         $statement = $this->connection->prepare($this->query);
         $statement->bindParam("puna_id",$job_id );
@@ -42,12 +43,12 @@ class JobMapper extends DatabaseConfig{
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         return $result;
     }
+
     public function deleteJob($pid){
         $this->query = "DELETE FROM puna WHERE puna_id=:id";
         $statement = $this->connection->prepare($this->query);
         $statement->bindParam(":id", $pid);
         $statement->execute();
     }
-    
-    
 }
+?>
